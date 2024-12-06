@@ -1,0 +1,40 @@
+<header>
+    <div class="w-full bg-orange-600 text-white" x-data="{ ouvert: false, totalRecettes: 0 }" x-init="
+        fetch('/src/data/recipes.json')
+            .then(response => response.json())
+            .then(data => {
+                totalRecettes = data.recipes.length;
+            });
+    ">
+        <div class="w-full max-w-screen-xl mx-auto flex justify-between items-center p-5">
+            <H1 href="#" class="text-lg font-bold">Gestion de recettes</H1>
+
+            <button @click="ouvert = !ouvert" class="lg:hidden">
+                <svg x-show="!ouvert" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+                <svg x-show="ouvert" x-cloak xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <div class="hidden lg:flex space-x-4">
+                <a href="#" class="hover:text-gray-300">Accueil</a>
+
+                <span class="ml-4 bg-orange-700 py-1 px-3 rounded text-sm">
+                    Total : <span x-text="totalRecettes"></span> recettes
+                </span>
+            </div>
+        </div>
+
+        <div x-show="ouvert" x-cloak class="lg:hidden bg-gray-700 w-full p-4 space-y-2">
+            <a href="#" class="block hover:text-gray-300">Accueil</a>
+
+            <div class="block bg-gray-800 py-1 px-3 rounded text-sm text-center">
+                Total : <span x-text="totalRecettes"></span> recettes
+            </div>
+        </div>
+    </div>
+</header>

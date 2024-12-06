@@ -1,0 +1,82 @@
+<div class="container w-full max-w-screen-xl mx-auto p-4 py-20" x-data="gestionRecettes()" x-init="init()">
+    <h1 class="text-2xl font-bold mb-4">Nos recettes</h1>
+
+    <div class="mb-4">
+        <label for="filtre" class="block text-sm font-medium text-gray-700">Filtrer par difficulté :</label>
+        <select id="filtre"
+            class="mt-1 block w-64 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-200"
+            x-model="filtreDifficulte">
+            <option value="toutes">Toutes</option>
+            <option value="facile">Facile</option>
+            <option value="moyenne">Moyenne</option>
+            <option value="difficile">Difficile</option>
+        </select>
+    </div>
+
+    <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <template x-for="(recette, index) in recettesFiltrees" :key="index">
+            <div class="bg-white rounded-lg shadow p-4 hover:bg-gray-200 transition duration-200 ease-in-out cursor-pointer"
+                @click="openRecette(recette)">
+                <img :src="recette.imageUrl" alt="Image de la recette" class="w-full h-40 object-cover rounded">
+                <h2 class="text-lg font-semibold mt-2" x-text="recette.title"></h2>
+                <p class="text-sm text-gray-600" x-text="'Difficulté: ' + recette.difficulty"></p>
+                <p class="text-sm text-gray-600" x-text="'Temps de préparation: ' + recette.preparationTime + ' min'">
+                </p>
+                <p class="text-sm text-gray-600" x-text="'Pour: ' + recette.servings + ' personnes'"></p>
+            </div>
+        </template>
+    </div>
+
+    <div x-show="modalOpen" x-transition.opacity
+        class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50"
+        @click.self="modalOpen = false">
+        <div class="bg-white rounded-lg p-8 max-w-4xl w-full relative" @click.stop>
+            <button @click="modalOpen = false" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+
+            <h2 class="text-2xl font-bold mb-4" x-text="selectedRecette.title"></h2>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold mb-2">Ingrédients</h3>
+                <ul>
+                    <template x-for="(ingredient, index) in selectedRecette.ingredients" :key="index">
+                        <li class="text-sm text-gray-600"
+                            x-text="ingredient.quantity + ' ' + ingredient.unit + ' de ' + ingredient.name"></li>
+                    </template>
+                </ul>
+            </div>
+
+            <!-- Section instructions de préparation des recettes de zinzin -->
+
+            <div>
+                <h3 class="text-xl font-semibold mb-2">Instructions</h3>
+                <template x-for="(instruction, index) in selectedRecette.instructions" :key="index">
+                    <div x-show="index === currentStep" class="text-sm text-gray-600">
+                        <p x-text="'Étape ' + (index + 1) + ': ' + instruction"></p>
+                    </div>
+                </template>
+
+                <div class="mt-4 flex justify-between">
+                    <button :disabled="currentStep === 0" @click="prevStep()"
+                        class="bg-gray-600 text-white px-4 py-2 rounded disabled:opacity-50">
+                        Précédent
+                    </button>
+                    <button :disabled="currentStep === selectedRecette.instructions.length - 1" @click="nextStep()"
+                        class="bg-gray-600 text-white px-4 py-2 rounded disabled:opacity-50">
+                        Suivant
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { gestionRecettes } from './src/js/grille.js';
+    window.gestionRecettes = gestionRecettes;
+</script>
